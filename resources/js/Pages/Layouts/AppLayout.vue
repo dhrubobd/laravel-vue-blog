@@ -8,9 +8,8 @@ import { Link, usePage } from '@inertiajs/vue3';
       <h1 class="text-2xl font-bold"><Link href="/">Amar Blog</Link></h1>
     </div>
     <nav class="space-x-4">
-      <Link href="/" class="hover:underline">Blog</Link>
-      <Link v-if="usePage().props.auth.user != null" href="/bookmarks" class="hover:underline">Your Blogs</Link>
-      <Link v-if="usePage().props.auth.user == null" href="/login" class="hover:underline">Login</Link>
+      <Link v-if="usePage().props.auth.user == null" href="/login" class="hover:underline text-green-300">Login</Link>
+      <Link v-if="usePage().props.auth.user != null" href="/bookmarks" class="hover:underline text-amber-500">Your Blogs</Link>
       <Link v-if="usePage().props.auth.user != null" href="/profile" class="hover:underline">Profile</Link>
       <Link v-if="usePage().props.auth.user != null" href="/logout" class="hover:underline">Logout</Link>
     </nav>
