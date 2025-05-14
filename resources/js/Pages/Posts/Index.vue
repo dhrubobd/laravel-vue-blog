@@ -45,8 +45,8 @@ const getPageUrl = (page) => {
                     </Link>
                 </div>
                 <div v-else>
-                    <button class="bg-black text-white px-4 py-2 rounded cursor-pointer">Login to create a
-                        post</button>
+                    <Link href="/login" class="bg-black text-white px-4 py-2 rounded cursor-pointer">Login to create a
+                        post</Link>
                 </div>
             </div>
 
