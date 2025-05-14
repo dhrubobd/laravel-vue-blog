@@ -9,7 +9,7 @@ import { Link, usePage } from '@inertiajs/vue3';
     </div>
     <nav class="space-x-4">
       <Link v-if="usePage().props.auth.user == null" href="/login" class="hover:underline text-green-300">Login</Link>
-      <Link v-if="usePage().props.auth.user != null" href="/bookmarks" class="hover:underline text-amber-500">Your Blogs</Link>
+      <Link v-if="usePage().props.auth.user != null" href="/bookmarks" class="hover:underline text-green-300">Your Blogs</Link>
       <Link v-if="usePage().props.auth.user != null" href="/profile" class="hover:underline">Profile</Link>
       <Link v-if="usePage().props.auth.user != null" href="/logout" class="hover:underline">Logout</Link>
     </nav>
