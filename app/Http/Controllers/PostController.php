@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 
@@ -18,6 +19,20 @@ class PostController extends Controller
 
         return Inertia::render('Posts/Index', [
             'posts' => $posts
+        ]);
+    }
+
+    public function show(String $postID)
+    {
+        $post = Post::where('id',$postID)->first();
+        $post->load(['user', 'tags', 'comments.user', 'likes']);
+        $isBookmarked = auth()->check() ? auth()->user()->bookmarks()->where('post_id', $post->id)->exists() : false;
+        $isLiked = auth()->check() ? auth()->user()->likes()->where('post_id', $post->id)->exists() : false;
+
+        return Inertia::render('Posts/Show', [
+            'post' => $post,
+            'isBookmarked' => $isBookmarked,
+            'isLiked' => $isLiked
         ]);
     }
 
