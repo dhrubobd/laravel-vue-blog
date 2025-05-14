@@ -51,14 +51,14 @@ const submitComment = () => {
             <div class="mb-6">
                 <h1 class="text-3xl font-bold mb-2">{{ post.title }}</h1>
                 <div class="flex items-center text-gray-500 mb-2">
-                    <img :src="post.user.profile_pic ? `/storage/${post.user.profile_pic}` : 'https://placehold.co/100x100?text=Author'"
+                    <img :src="post.user.profile_pic ? `/${post.user.profile_pic}` : 'https://placehold.co/100x100?text=Author'"
                         class="w-10 h-10 rounded-full mr-2" />
                     <span class="font-semibold">{{ post.user.username }}</span>
                     <span class="mx-2">•</span>
                     <span>{{ new Date(post.created_at).toLocaleDateString() }}</span>
                 </div>
                 <div v-if="post.image">
-                    <img :src="`/storage/${post.image}`" class="w-full h-auto rounded mb-4" />
+                    <img :src="`/${post.image}`" class="w-full h-auto rounded mb-4" />
                 </div>
                 <div v-else>
                     <img :src="`https://placehold.co/400x400?text=Image`" alt="">

@@ -24,7 +24,9 @@ class PostController extends Controller
 
     public function show(String $postID)
     {
-        $post = Post::where('id',$postID)->first();
+        $post = Post::where('id',$postID)
+        ->where('visibility', 'public')
+        ->first();
         $post->load(['user', 'tags', 'comments.user', 'likes']);
         $isBookmarked = auth()->check() ? auth()->user()->bookmarks()->where('post_id', $post->id)->exists() : false;
         $isLiked = auth()->check() ? auth()->user()->likes()->where('post_id', $post->id)->exists() : false;
@@ -36,22 +38,35 @@ class PostController extends Controller
         ]);
     }
 
+    public function create(){
+        return Inertia::render('Posts/Create');
+    }
+
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'image' => 'nullable|image',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'visibility' => 'required|in:public,private',
         ]);
 
-        $path = $request->file('image') ? $request->file('image')->store('posts', 'public') : null;
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+
+            $fileName = time().'.'.$image->getClientOriginalExtension();
+            $filePath = 'uploads/'.$fileName;
+
+            $image->move(public_path('uploads'), $fileName);
+        }
+
+        //$path = $request->file('image') ? $request->file('image')->store('posts', 'public') : null;
 
         Post::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
             'content' => $request->content,
-            'image' => $path,
+            'image' => $filePath,
             'visibility' => $request->visibility,
         ]);
 

@@ -55,7 +55,7 @@ const getPageUrl = (page) => {
                     <h3 class="text-xl font-semibold">{{ post.title }}</h3>
                     <p class="text-gray-600">by {{ post.user.username }}</p>
                     <p class="mt-2 text-gray-800">{{ post.content.substring(0, 150) }}...</p>
-                    <Link :href="`/posts/${post.id}`"
+                    <Link :href="`/posts/${post.id}/show`"
                         class="bg-black text-white py-2 px-5 m-2 float-end block hover:underline rounded">Read more
                     </Link>
                     <div class="clear-both"></div>
