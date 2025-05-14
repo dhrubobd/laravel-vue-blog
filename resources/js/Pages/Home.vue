@@ -3,10 +3,10 @@ import { useForm, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { useToast } from 'vue-toastification';
 const toast = useToast();
-const flash = computed(()=>usePage().props.flash);
+const flash = computed(() => usePage().props.flash);
 const form = useForm({
-    email : '',
-    password : ''
+    email: '',
+    password: ''
 });
 const submitForm = () => {
     form.post(`/login`, {
