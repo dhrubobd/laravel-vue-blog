@@ -5,6 +5,20 @@ import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
 createInertiaApp({
+
+  progress: {
+    // The delay after which the progress bar will appear, in milliseconds...
+    delay: 100,
+
+    // The color of the progress bar...
+    color: '#33ffb8',
+
+    // Whether to include the default NProgress styles...
+    includeCSS: true,
+
+    // Whether the NProgress spinner will be shown...
+    showSpinner: false,
+  },
   resolve: name => {
     const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
     return pages[`./Pages/${name}.vue`]
