@@ -2,6 +2,7 @@
 import { useForm, router } from "@inertiajs/vue3";
 import { useToast } from 'vue-toastification';
 import AppLayout from "../Layouts/AppLayout.vue";
+import { onMounted, ref } from "vue";
 
 
 const toast = useToast();
@@ -9,9 +10,22 @@ const toast = useToast();
 const form = useForm({
     title: '',
     content: '',
+    tags: [],
     image: null,
     visibility: 'public'
 });
+
+const tags = ref([]);
+
+onMounted(() => {
+    fetchTags();
+});
+
+// Fetch Tags from Backend
+const fetchTags = async () => {
+    const response = await axios.get("/tags");
+    tags.value = response.data.tags;
+};
 
 // Handle Image Upload
 const handleImageUpload = (event) => {
@@ -24,6 +38,12 @@ const submitPost = () => {
     formData.append("title", form.title);
     formData.append("content", form.content);
     formData.append("visibility", form.visibility);
+
+    form.tags.forEach(tag => formData.append("tags[]", tag));
+    if (form.image) {
+        formData.append("image", form.image);
+    }
+
     if (form.image) {
         formData.append("image", form.image);
     }
@@ -36,6 +56,7 @@ const submitPost = () => {
             toast.success("Post created successfully!");
             form.title = "";
             form.content = "";
+            form.tags = [];
             form.image = null;
             form.visibility = "public";
         },
@@ -75,6 +96,17 @@ const submitPost = () => {
                  file:text-sm file:font-semibold 
                  file:bg-blue-50 file:text-blue-700 
                  hover:file:bg-blue-100">
+                </div>
+
+                <!-- Tags -->
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Tags</label>
+                    <select v-model="form.tags" multiple
+                        class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option v-for="tag in tags" :key="tag.id" :value="tag.id">
+                            {{ tag.name }}
+                        </option>
+                    </select>
                 </div>
 
                 <!-- Visibility Options -->

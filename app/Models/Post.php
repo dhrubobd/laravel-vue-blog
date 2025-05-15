@@ -4,6 +4,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+
 class Post extends Model
 {
     use HasFactory, Notifiable;
@@ -33,5 +35,22 @@ class Post extends Model
     public function bookmarks()
     {
         return $this->hasMany(Bookmark::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        
+        static::deleting(function ($post) {
+
+            // Ensure tags are detached when a post is deleted
+            $post->tags()->detach();
+
+            // Delete Image if it exists
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+        });
     }
 }

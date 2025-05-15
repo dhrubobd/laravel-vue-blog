@@ -27,4 +27,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture']);
     Route::post('/profile/update-username', [ProfileController::class, 'updateUsername']);
     Route::post('/profile/update-password', [ProfileController::class, 'updatePassword']);
+
+    Route::get('/tags', [PostController::class, 'getTags']); // For fetching tags
 });

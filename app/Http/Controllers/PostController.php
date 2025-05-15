@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 
@@ -49,6 +49,7 @@ class PostController extends Controller
             'content' => 'required|string',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'visibility' => 'required|in:public,private',
+            'tags' => 'nullable|array'
         ]);
 
         if($request->hasFile('image')){
@@ -62,7 +63,7 @@ class PostController extends Controller
 
         //$path = $request->file('image') ? $request->file('image')->store('posts', 'public') : null;
 
-        Post::create([
+        $post = Post::create([
             'user_id' => auth()->id(),
             'title' => $request->title,
             'content' => $request->content,
@@ -70,6 +71,16 @@ class PostController extends Controller
             'visibility' => $request->visibility,
         ]);
 
+        if ($request->tags) {
+            $post->tags()->sync($request->tags);
+        }
+
         return redirect()->route('posts.index');
+    }
+
+    public function getTags()
+    {
+        $tags = Tag::select('id', 'name')->get();
+        return response()->json(['tags' => $tags]);
     }
 }
