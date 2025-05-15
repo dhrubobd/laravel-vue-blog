@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
 
 class ProfileController extends Controller
@@ -23,18 +24,20 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         if ($request->hasFile('profile_pic')) {
-            
+            // Deleting Existing Profile Picture
+            File::delete(public_path('/'.$user->profile_pic));
+
             $image = $request->file('profile_pic');
 
             $fileName = time() . '.' . $image->getClientOriginalExtension();
             $filePath = 'uploads/' . $fileName;
 
             $image->move(public_path('uploads'), $fileName);
+
+            $user->update(['profile_pic' => $filePath]);
+
         }
-
-        //$path = $request->file('profile_pic')->store('profile_pictures');
-        $user->update(['profile_pic' => $filePath]);
-
+        
         return back();
     }
 
@@ -53,7 +56,7 @@ class ProfileController extends Controller
             'new_password' => 'required'
         ]);
 
-        
+
 
         $user = auth()->user();
         if (!Hash::check($request->current_password, $user->password)) {

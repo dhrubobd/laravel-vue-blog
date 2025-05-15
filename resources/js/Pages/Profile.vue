@@ -95,7 +95,7 @@ const updatePassword = () => {
 
 onMounted(() => {
     if(user){
-        console.log(user);
+        //console.log(user);
         authorPhoto.value = `/${user.profile_pic}`;
     }
 
@@ -132,7 +132,7 @@ onMounted(() => {
                 <button @click="updateUsername" :disabled="loading.username"
                     class="mt-2 px-4 py-2 bg-black text-white rounded-md hover:bg-blue-300 transition cursor-pointer">
                     <span v-if="loading.username">Updating...</span>
-                    <span v-else>Update Username</span>
+                    <span v-else>Update Your Name</span>
                 </button>
             </div>
 
