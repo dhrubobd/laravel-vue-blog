@@ -129,7 +129,7 @@ const submitPost = () => {
                 <!-- Submit Button -->
                 <div class="flex justify-end mt-6">
                     <button type="submit"
-                        class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-200 cursor-pointer">
+                        class="px-6 py-2 bg-black text-white font-semibold rounded-md hover:bg-blue-300 transition duration-200 cursor-pointer">
                         Create Post
                     </button>
                 </div>
