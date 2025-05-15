@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [PostController::class,'index'])->name('posts.index');
+
+Route::get('/', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{postID}/show', [PostController::class, 'show'])->name('posts.show');
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -19,4 +21,10 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::middleware('auth')->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts/create', [PostController::class, 'store'])->name('posts.store');
+
+    //Profile
+    Route::get('/profile',[ProfileController::class,'index'])->name('profile.index');
+    Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture']);
+    Route::post('/profile/update-username', [ProfileController::class, 'updateUsername']);
+    Route::post('/profile/update-password', [ProfileController::class, 'updatePassword']);
 });
