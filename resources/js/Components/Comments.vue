@@ -4,16 +4,39 @@ import { usePage, router } from "@inertiajs/vue3";
 import axios from "axios";
 
 const { post } = usePage().props;
+const user = usePage().props.auth.user;
+
 const comments = ref([]);
 const newComment = ref("");
 const parentId = ref(null);
 
 onMounted(() => {
+
     comments.value = post.comments;
 
+    /*
     window.Echo.channel(`post.${post.id}`).listen(".comment.posted", (event) => {
         comments.value.push(event.comment);
     });
+    */
+    Echo.channel(`post.${post.id}.comments`)
+        .listen("CommentCreated", (event) => {
+            if (event.comment.parent_id) {
+                const parent = comments.value.find(c => c.id === event.comment.parent_id);
+                if (parent) parent.replies.push(event.comment);
+            } else {
+                comments.value.push(event.comment);
+            }
+        })
+        .listen("CommentDeleted", (event) => {
+            // Remove the comment from the list
+            comments.value = comments.value.filter(c => c.id !== event.commentId);
+            comments.value.forEach(comment => {
+                if (comment.replies) {
+                    comment.replies = comment.replies.filter(reply => reply.id !== event.commentId);
+                }
+            });
+        });
 });
 
 const submitComment = async () => {
@@ -24,6 +47,17 @@ const submitComment = async () => {
 
     newComment.value = "";
     parentId.value = null;
+    location.reload();
+};
+
+// Check if user can delete the comment (post owner or comment owner)
+const canDeleteComment = (comment) => {
+    return user && (comment.user_id === user.id || post.user_id === user.id);
+};
+
+// Delete a comment
+const deleteComment = async (commentId) => {
+    await axios.delete(`/posts/${post.id}/comments/${commentId}`);
     location.reload();
 };
 
@@ -38,7 +72,17 @@ const reply = (id) => {
         <div v-for="comment in comments" :key="comment.id" class="mb-2">
             <div class="bg-gray-100 p-2 rounded">
                 <p><strong>{{ comment.user.username }}</strong>: {{ comment.content }}</p>
-                <button class="text-primary text-sm cursor-pointer" @click="reply(comment.id)">Reply</button>
+                <div class="flex gap-2">
+                    <!--
+                        <button class="text-primary text-sm cursor-pointer" @click="reply(comment.id)">Reply</button>
+                    -->
+                    <button v-if="canDeleteComment(comment)" @click="deleteComment(comment.id)"
+                        class="text-red-500 text-sm hover:underline cursor-pointer">
+                        Delete
+                    </button>
+                </div>
+
+
             </div>
             <div v-if="comment.replies" class="ml-4 mt-2">
                 <div v-for="reply in comment.replies" :key="reply.id" class="bg-gray-50 p-2 rounded">

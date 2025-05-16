@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/tags', [PostController::class, 'getTags']); // For fetching tags
 
-    Route::post('/posts/{post_id}/comments', [CommentController::class, 'store'])->middleware('auth');
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->middleware('auth');
+    Route::post('/posts/{post_id}/comments', [CommentController::class, 'store']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
+    Route::delete('/posts/{post}/comments/{comment}', [CommentController::class, 'destroy']);
 });
