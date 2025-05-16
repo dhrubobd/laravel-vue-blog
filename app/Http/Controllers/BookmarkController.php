@@ -18,7 +18,7 @@ class BookmarkController extends Controller
             ->with('post.tags', 'post.user')
             ->latest()
             ->paginate(5); // 5 bookmarks per page
-            
+
         return Inertia::render('Bookmarks', [
             'bookmarks' => $bookmarks
         ]);
