@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class Post extends Model
 {
     use HasFactory, Notifiable;
-    
+
     protected $fillable = ['user_id', 'title', 'content', 'image', 'visibility'];
 
     public function user()
@@ -37,11 +38,16 @@ class Post extends Model
         return $this->hasMany(Bookmark::class);
     }
 
+    public function bookmarkedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'bookmarks');
+    }
+
     protected static function boot()
     {
         parent::boot();
 
-        
+
         static::deleting(function ($post) {
 
             // Ensure tags are detached when a post is deleted

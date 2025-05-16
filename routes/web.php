@@ -1,13 +1,13 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
 
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{postID}/show', [PostController::class, 'show'])->name('posts.show');
@@ -37,4 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/posts/{post}/comments/{comment}', [CommentController::class, 'destroy']);
 
     Route::post('/posts/{post_id}/like', [LikeController::class, 'toggle']);
+
+    Route::get('/bookmarks', [BookmarkController::class, 'index']);
+    Route::post('/posts/{post}/bookmark', [BookmarkController::class, 'toggle']);
 });
