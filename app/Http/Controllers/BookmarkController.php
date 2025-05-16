@@ -36,9 +36,6 @@ class BookmarkController extends Controller
             $user->bookmarks()->attach($post->id);
         }
         return redirect()->back();
-        //return response()->json([
-        //    'bookmarked' => $user->bookmarks()->where('post_id', $post->id)->exists()
-        //]);
     }
 
     // Remove a Bookmark
