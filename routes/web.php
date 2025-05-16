@@ -40,4 +40,5 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/bookmarks', [BookmarkController::class, 'index']);
     Route::post('/posts/{post}/bookmark', [BookmarkController::class, 'toggle']);
+    Route::delete('/bookmarks/{bookmark}', [BookmarkController::class, 'destroy']);
 });
