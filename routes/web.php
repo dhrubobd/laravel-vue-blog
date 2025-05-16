@@ -24,6 +24,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts/create', [PostController::class, 'store'])->name('posts.store');
 
+    //User Post Control
+    Route::get('/posts', [PostController::class, 'userPosts'])->name('user.posts');
+
     //Profile
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture']);
@@ -35,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{post_id}/comments', [CommentController::class, 'store']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
     Route::delete('/posts/{post}/comments/{comment}', [CommentController::class, 'destroy']);
+
 
     Route::post('/posts/{post_id}/like', [LikeController::class, 'toggle']);
 

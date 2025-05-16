@@ -22,11 +22,20 @@ class PostController extends Controller
         ]);
     }
 
+    public function userPosts()
+    {
+        $posts = auth()->user()->posts()->latest()->paginate(5);
+
+        return Inertia::render('Posts/UserPosts', [
+            'posts' => $posts
+        ]);
+    }
+
     public function show(String $postID)
     {
-        $post = Post::where('id',$postID)
-        ->where('visibility', 'public')
-        ->first();
+        $post = Post::where('id', $postID)
+            ->where('visibility', 'public')
+            ->first();
         $post->load(['user', 'tags', 'comments.user', 'likes']);
         $isBookmarked = auth()->check() ? auth()->user()->bookmarks()->where('post_id', $post->id)->exists() : false;
         $isLiked = auth()->check() ? auth()->user()->likes()->where('post_id', $post->id)->exists() : false;
@@ -38,7 +47,8 @@ class PostController extends Controller
         ]);
     }
 
-    public function create(){
+    public function create()
+    {
         return Inertia::render('Posts/Create');
     }
 
@@ -52,11 +62,11 @@ class PostController extends Controller
             'tags' => 'nullable|array'
         ]);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             $image = $request->file('image');
 
-            $fileName = time().'.'.$image->getClientOriginalExtension();
-            $filePath = 'uploads/'.$fileName;
+            $fileName = time() . '.' . $image->getClientOriginalExtension();
+            $filePath = 'uploads/' . $fileName;
 
             $image->move(public_path('uploads'), $fileName);
         }

@@ -10,7 +10,7 @@ import { Link, usePage } from '@inertiajs/vue3';
     <nav class="space-x-4">
       <Link v-if="usePage().props.auth.user == null" href="/login" class="hover:underline text-green-300">Login</Link>
       <Link v-if="usePage().props.auth.user == null" href="/register" class="hover:underline text-blue-300">Register</Link>
-      <Link v-if="usePage().props.auth.user != null" href="/blogs" class="hover:underline text-green-300">Your Blogs</Link>
+      <Link v-if="usePage().props.auth.user != null" href="/posts" class="hover:underline text-green-300">Your Blogs</Link>
       <Link v-if="usePage().props.auth.user != null" href="/bookmarks" class="hover:underline">Bookmarked</Link>
       <Link v-if="usePage().props.auth.user != null" href="/profile" class="hover:underline">Profile</Link>
       <Link v-if="usePage().props.auth.user != null" href="/logout" class="hover:underline">Logout</Link>
