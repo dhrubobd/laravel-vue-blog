@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Inertia\Inertia;
-
 
 class PostController extends Controller
 {
@@ -92,5 +92,22 @@ class PostController extends Controller
     {
         $tags = Tag::select('id', 'name')->get();
         return response()->json(['tags' => $tags]);
+    }
+
+    // Destroy function for deleting a post
+    public function destroy(String $post_id)
+    {
+        $post = Post::where('id',$post_id)->first();
+        if ($post->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Unauthorized');
+        }
+
+        // Delete the image if it exists
+        if ($post->image) {
+            File::delete(public_path('/'.$post->image));
+        }
+
+        $post->delete();
+        return redirect()->back()->with('success', 'Post deleted successfully');
     }
 }

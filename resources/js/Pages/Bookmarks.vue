@@ -4,8 +4,6 @@ import { usePage, router, Link } from "@inertiajs/vue3";
 const bookmarks = usePage().props.bookmarks;
 import AppLayout from "./Layouts/AppLayout.vue";
 
-console.log(bookmarks);
-
 // Format date to a more readable format
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", {

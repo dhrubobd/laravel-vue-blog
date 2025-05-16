@@ -1,9 +1,15 @@
 <script setup>
-import { ref } from "vue";
-import { usePage,Link } from "@inertiajs/vue3";
+import { ref, computed } from "vue";
+import { usePage,Link, router } from "@inertiajs/vue3";
 import AppLayout from "../Layouts/AppLayout.vue";
+import { useToast } from 'vue-toastification';
+const toast = useToast();
 
-const posts = ref(usePage().props.posts);
+const flash = computed(() => usePage().props.flash);
+
+const props = defineProps({
+    posts : Array
+});
 
 // Format date to a more readable format
 const formatDate = (date) => {
@@ -13,11 +19,46 @@ const formatDate = (date) => {
         day: "numeric",
     });
 };
+
+// Pagination Handler
+const goToPage = (url) => {
+    if (url) {
+        router.get(url);
+    }
+};
+
+// Generate URL for Page Number
+const getPageUrl = (page) => {
+    const baseUrl = posts.path;
+    return `${baseUrl}?page=${page}`;
+};
+
+// Delete a post
+const deletePost = (postId) => {
+  if (confirm("Are you sure you want to delete this post?")) {
+    router.delete(`/posts/${postId}`, {
+      onSuccess: () => {
+        if (flash.value.success != null) {
+            toast.success(flash.value.success);
+        }
+        if (flash.value.error != null) {
+            toast.error(flash.value.error);
+        }
+      }
+    });
+  }
+};
 </script>
 <template>
     <AppLayout>
         <div class="max-w-4xl mx-auto mt-8">
-            <h1 class="text-3xl font-bold text-center mb-6">My Posts</h1>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-3xl font-bold">My Posts</h2>
+                <div>
+                    <Link href="/posts/create" class="bg-black text-white px-4 py-2 rounded cursor-pointer">Create Post
+                    </Link>
+                </div>
+            </div>
 
             <div v-if="posts.data.length > 0" class="space-y-4">
                 <div v-for="post in posts.data" :key="post.id"
@@ -32,10 +73,10 @@ const formatDate = (date) => {
                             </p>
                         </div>
                         <div class="flex space-x-2">
-                            <inertia-link :href="`/posts/${post.id}/edit`"
+                            <Link :href="`/posts/${post.id}/edit`"
                                 class="px-3 py-1 text-white bg-black rounded hover:bg-blue-500 transition cursor-pointer">
                                 Edit
-                            </inertia-link>
+                            </Link>
                             <button @click="deletePost(post.id)"
                                 class="px-3 py-1 text-white bg-red-500 rounded hover:bg-red-600 transition cursor-pointer">
                                 Delete
