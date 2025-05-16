@@ -39,8 +39,9 @@ class BookmarkController extends Controller
     }
 
     // Remove a Bookmark
-    public function destroy(Bookmark $bookmark)
+    public function destroy(String $bookmark_id)
     {
+        $bookmark = Bookmark::where('id',$bookmark_id)->first();
         if ($bookmark->user_id === Auth::id()) {
             $bookmark->delete();
             return redirect()->back()->with('success', 'Bookmark removed successfully.');

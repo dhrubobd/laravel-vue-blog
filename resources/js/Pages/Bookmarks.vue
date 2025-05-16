@@ -1,8 +1,16 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { usePage, router, Link } from "@inertiajs/vue3";
-const bookmarks = usePage().props.bookmarks;
 import AppLayout from "./Layouts/AppLayout.vue";
+import { useToast } from 'vue-toastification';
+const toast = useToast();
+
+const flash = computed(() => usePage().props.flash);
+
+//const bookmarks = usePage().props.bookmarks;
+const props = defineProps({
+  bookmarks : Array
+});
 
 // Format date to a more readable format
 const formatDate = (date) => {
@@ -17,12 +25,16 @@ const formatDate = (date) => {
 const removeBookmark = (bookmarkId) => {
   router.delete(`/bookmarks/${bookmarkId}`,
     {
-      preserveState: true,
-      preserveScroll: true,
-      async: true
+      onSuccess: () => {
+        if (flash.value.success != null) {
+          toast.success(flash.value.success);
+        }
+        if (flash.value.error != null) {
+          toast.error(flash.value.error);
+        }
+      }
     }
   );
-  location.reload();
 };
 
 // Change page
