@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -34,4 +35,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/posts/{post_id}/comments', [CommentController::class, 'store']);
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
     Route::delete('/posts/{post}/comments/{comment}', [CommentController::class, 'destroy']);
+
+    Route::post('/posts/{post_id}/like', [LikeController::class, 'toggle']);
 });

@@ -1,10 +1,11 @@
 <script setup>
 import { usePage, router, Link } from "@inertiajs/vue3";
-const { post, user, isBookmarked, isLiked } = usePage().props;
+const { post, isBookmarked, isLiked } = usePage().props;
 import { ref, computed, onMounted } from "vue";
 import { useToast } from 'vue-toastification';
 import AppLayout from "../Layouts/AppLayout.vue";
 import Comments from "@/Components/Comments.vue";
+import axios from "axios";
 
 const flash = computed(() => usePage().props.flash);
 
@@ -24,13 +25,14 @@ const toggleBookmark = () => {
     router.post(`/posts/${post.id}/bookmark`);
 };
 
-const toggleLike = () => {
+const toggleLike = async () => {
     if (usePage().props.auth.user == null) {
         toast.error("You need to login to like.");
         return;
     }
 
-    router.post(`/posts/${post.id}/like`);
+    await axios.post(`/posts/${post.id}/like`);
+    location.reload();
 };
 
 /*
