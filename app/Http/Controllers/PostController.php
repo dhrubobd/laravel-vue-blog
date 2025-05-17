@@ -33,18 +33,22 @@ class PostController extends Controller
 
     public function show(String $postID)
     {
-        $post = Post::where('id', $postID)
-            ->where('visibility', 'public')
-            ->first();
-        $post->load(['user', 'tags', 'comments.user', 'likes']);
-        $isBookmarked = auth()->check() ? auth()->user()->bookmarks()->where('post_id', $post->id)->exists() : false;
-        $isLiked = auth()->check() ? auth()->user()->likes()->where('post_id', $post->id)->exists() : false;
+        try {
+            $post = Post::where('id', $postID)
+                ->where('visibility', 'public')
+                ->first();
+            $post->load(['user', 'tags', 'comments.user', 'likes']);
+            $isBookmarked = auth()->check() ? auth()->user()->bookmarks()->where('post_id', $post->id)->exists() : false;
+            $isLiked = auth()->check() ? auth()->user()->likes()->where('post_id', $post->id)->exists() : false;
 
-        return Inertia::render('Posts/Show', [
-            'post' => $post,
-            'isBookmarked' => $isBookmarked,
-            'isLiked' => $isLiked
-        ]);
+            return Inertia::render('Posts/Show', [
+                'post' => $post,
+                'isBookmarked' => $isBookmarked,
+                'isLiked' => $isLiked
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error',$th->getMessage());
+        }
     }
 
     public function create()
@@ -88,6 +92,68 @@ class PostController extends Controller
         return redirect()->route('posts.index');
     }
 
+    public function edit(String $post_id)
+    {
+        $post = Post::where('id', $post_id)->first();
+        // Ensure only the post owner can edit
+        if ($post->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Unauthorized');
+        }
+
+        $tags = Tag::all(); // For tag selection
+
+        return Inertia::render('Posts/Edit', [
+            'post' => $post->load('tags'),
+            'tags' => $tags
+        ]);
+    }
+
+    public function update(Request $request, String $post_id)
+    {
+        $post = Post::where('id', $post_id)->first();
+        // Ensure only the post owner can update
+        if ($post->user_id !== auth()->id()) {
+            return redirect()->back()->with('error', 'Unauthorized');
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'visibility' => 'required|in:public,private',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+            'image' => 'nullable|image|max:2048',
+        ]);
+
+        // Update post data
+        $post->update([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'visibility' => $validated['visibility'],
+        ]);
+
+        // Update image if provided
+        if ($request->hasFile('image')) {
+            if ($post->image) {
+                File::delete(public_path('/' . $post->image));
+                $image = $request->file('image');
+
+                $fileName = time() . '.' . $image->getClientOriginalExtension();
+                $filePath = 'uploads/' . $fileName;
+
+                $image->move(public_path('uploads'), $fileName);
+                $post->image = $filePath;
+            }
+
+            $post->save();
+        }
+
+        // Sync tags
+        $post->tags()->sync($validated['tags'] ?? []);
+
+        return redirect()->route('user.posts')->with('success', 'Post updated successfully');
+    }
+
     public function getTags()
     {
         $tags = Tag::select('id', 'name')->get();
@@ -97,14 +163,14 @@ class PostController extends Controller
     // Destroy function for deleting a post
     public function destroy(String $post_id)
     {
-        $post = Post::where('id',$post_id)->first();
+        $post = Post::where('id', $post_id)->first();
         if ($post->user_id !== auth()->id()) {
             return redirect()->back()->with('error', 'Unauthorized');
         }
 
         // Delete the image if it exists
         if ($post->image) {
-            File::delete(public_path('/'.$post->image));
+            File::delete(public_path('/' . $post->image));
         }
 
         $post->delete();

@@ -7,9 +7,9 @@ const toast = useToast();
 
 const flash = computed(() => usePage().props.flash);
 
-//const bookmarks = usePage().props.bookmarks;
+
 const props = defineProps({
-  bookmarks : Array
+  bookmarks : Object
 });
 
 // Format date to a more readable format
