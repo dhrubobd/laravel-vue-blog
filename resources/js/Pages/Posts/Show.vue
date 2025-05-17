@@ -1,6 +1,5 @@
 <script setup>
 import { usePage, router, Link } from "@inertiajs/vue3";
-const { post, isBookmarked, isLiked } = usePage().props;
 import { ref, computed, onMounted } from "vue";
 import { useToast } from 'vue-toastification';
 import AppLayout from "../Layouts/AppLayout.vue";
@@ -11,16 +10,18 @@ const flash = computed(() => usePage().props.flash);
 
 const toast = useToast();
 
+const { post, isBookmarked, isLiked } = usePage().props;
+
 // Bookmark and Like State
 const toggleBookmark = async () => {
     if (usePage().props.auth.user == null) {
         toast.error("You need to login to bookmark.");
         return;
     }
-
     await axios.post(`/posts/${post.id}/bookmark`);
     location.reload();
 };
+
 
 const toggleLike = async () => {
     if (usePage().props.auth.user == null) {

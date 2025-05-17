@@ -66,7 +66,7 @@ const deletePost = (postId) => {
                     <div class="flex items-start justify-between">
                         <div>
                             <h2 class="text-xl font-semibold text-black hover:underline">
-                                <Link :href="`/posts/${post.id}`">{{ post.title }}</Link>
+                                <Link :href="`/posts/${post.id}/show`">{{ post.title }}</Link>
                             </h2>
                             <p class="text-sm text-gray-500">
                                 {{ formatDate(post.created_at) }}

@@ -35,7 +35,7 @@ class BookmarkController extends Controller
         } else {
             $user->bookmarks()->attach($post->id);
         }
-        return redirect()->back();
+        return redirect()->back()->with('success','Bookmark Changed');
     }
 
     // Remove a Bookmark

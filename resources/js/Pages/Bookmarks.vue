@@ -59,7 +59,7 @@ const changePage = (url) => {
                 class="w-16 h-16 rounded-md object-cover">
               <div>
                 <h2 class="text-xl font-semibold text-black hover:underline">
-                  <Link :href="`/posts/${bookmark.post.id}`">{{ bookmark.post.title }}</Link>
+                  <Link :href="`/posts/${bookmark.post.id}/show`">{{ bookmark.post.title }}</Link>
                 </h2>
                 <p class="text-sm text-gray-500">
                   By <span class="font-medium">{{ bookmark.post.user.username }}</span> - {{
