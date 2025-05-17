@@ -1,6 +1,6 @@
 <script setup>
 import { ref, reactive, onMounted } from "vue";
-import { usePage, router } from "@inertiajs/vue3";
+import { usePage, router, Link } from "@inertiajs/vue3";
 import axios from "axios";
 
 const { post } = usePage().props;
@@ -90,9 +90,16 @@ const reply = (id) => {
                 </div>
             </div>
         </div>
+        <div v-if="usePage().props.auth.user != null">
+            <textarea v-model="newComment" class="w-full mt-2 p-2 border rounded"
+                placeholder="Add a comment..."></textarea>
+            <button @click="submitComment" class="bg-black text-white px-4 py-2 rounded mt-2 cursor-pointer">Post
+                Comment</button>
+        </div>
+        <div v-else class="flex justify-between items-center mb-4">
+            <h4>Login to Comment</h4>
+            <Link href="/login" class="bg-black text-white px-4 py-2 rounded cursor-pointer">Login</Link>
+        </div>
 
-        <textarea v-model="newComment" class="w-full mt-2 p-2 border rounded" placeholder="Add a comment..."></textarea>
-        <button @click="submitComment" class="bg-black text-white px-4 py-2 rounded mt-2 cursor-pointer">Post
-            Comment</button>
     </div>
 </template>
