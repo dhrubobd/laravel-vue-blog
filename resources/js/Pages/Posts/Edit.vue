@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { usePage, router } from "@inertiajs/vue3";
+import { usePage, router, Link } from "@inertiajs/vue3";
 
 const { post, tags } = usePage().props;
 const form = ref({
@@ -104,11 +104,11 @@ const updatePost = () => {
       </div>
 
       <div class="flex justify-end gap-4">
-        <inertia-link 
-          href="/user/posts" 
+        <Link 
+          href="/posts" 
           class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
           Cancel
-        </inertia-link>
+        </Link>
         <button 
           type="submit" 
           class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
